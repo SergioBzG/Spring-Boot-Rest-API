@@ -30,7 +30,7 @@ public class AuthorController {
         // Map AuthorDto to Author using mapper
         Author authorEntity = authorMapper.mapFrom(author);
         // Create Author
-        Author savedAuthorEntity = authorService.createAuthor(authorEntity);
+        Author savedAuthorEntity = authorService.saveAuthor(authorEntity);
         // Map Author to AuthorDto using mapper
         AuthorDto savedAuthorDto = authorMapper.mapTo(savedAuthorEntity);
 
@@ -60,5 +60,25 @@ public class AuthorController {
             AuthorDto authorDto = authorMapper.mapTo(authorEntity);
             return new ResponseEntity<>(authorDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(
+            @PathVariable("id") Long id,
+            @RequestBody AuthorDto authorDto
+    ) {
+       if(!authorService.isExists(id)){
+           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+       }
+
+       // Set id
+       authorDto.setId(id);
+       Author authorEntity = authorMapper.mapFrom(authorDto);
+       // Update author using the save method
+        Author savedAuthorEntity = authorService.saveAuthor(authorEntity);
+        return new ResponseEntity<>(
+                authorMapper.mapTo(savedAuthorEntity),
+                HttpStatus.OK
+        );
     }
 }

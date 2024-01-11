@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 public class BookController {
 
     private final BookService bookService;
-    private final Mapper<Book, BookDto> modelMapper;
+    private final Mapper<Book, BookDto> bookMapper;
 
-    public BookController(BookService bookService, Mapper<Book, BookDto> modelMapper) {
+    public BookController(BookService bookService, Mapper<Book, BookDto> bookMapper) {
         this.bookService = bookService;
-        this.modelMapper = modelMapper;
+        this.bookMapper = bookMapper;
     }
 
     @PutMapping(path = "/books/{isbn}")
@@ -29,11 +29,11 @@ public class BookController {
             @RequestBody BookDto book
     ) {
         // Map BookDto to Book using mapper
-        Book bookEntity = modelMapper.mapFrom(book);
+        Book bookEntity = bookMapper.mapFrom(book);
         // Create Book
         Book savedBookEntity = bookService.createBook(isbn, bookEntity);
         // Map Book to BookDto using mapper
-        BookDto savedBookDto = modelMapper.mapTo(savedBookEntity);
+        BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
         
         return new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
     }
@@ -42,7 +42,7 @@ public class BookController {
     public List<BookDto> listBooks() {
         List<Book> books = bookService.findAll();
         return books.stream()
-                .map(modelMapper::mapTo)
+                .map(bookMapper::mapTo)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +50,7 @@ public class BookController {
     public ResponseEntity<BookDto> getBook(@PathVariable("isbn") String isbn){
         Optional<Book> foundBook = bookService.findOne(isbn);
         return foundBook.map(bookEntity -> { // In case that a book exists we have bookEntity
-            BookDto bookDto = modelMapper.mapTo(bookEntity);
+            BookDto bookDto = bookMapper.mapTo(bookEntity);
             return new ResponseEntity<>(bookDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
