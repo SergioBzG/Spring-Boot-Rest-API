@@ -22,19 +22,31 @@ public class BookController {
         this.bookService = bookService;
         this.bookMapper = bookMapper;
     }
-
+    
+    // This endpoint is used to create and update a book
     @PutMapping(path = "/books/{isbn}")
-    public ResponseEntity<BookDto> createBook(
+    public ResponseEntity<BookDto> createUpdateBook(
             @PathVariable("isbn") String isbn,
-            @RequestBody BookDto book
+            @RequestBody BookDto bookDto
     ) {
         // Map BookDto to Book using mapper
-        Book bookEntity = bookMapper.mapFrom(book);
-        // Create Book
-        Book savedBookEntity = bookService.createBook(isbn, bookEntity);
+        Book bookEntity = bookMapper.mapFrom(bookDto);
+
+        // Asking if book exists or not before to perform .saveBook()
+        boolean bookExists = bookService.isExists(isbn);
+
+        // Update or create book
+        Book savedBookEntity = bookService.saveBook(isbn, bookEntity);
+
         // Map Book to BookDto using mapper
         BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
-        
+
+        // Check if the book exists or not and then create or update it
+        if(bookExists){
+            // Update book
+            return new ResponseEntity<>(savedBookDto, HttpStatus.OK);
+        }
+        // Create Book
         return new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
     }
 
