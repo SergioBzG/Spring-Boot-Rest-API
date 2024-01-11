@@ -108,4 +108,31 @@ public class AuthorControllerIntegrationTests {
         );
     }
 
+    // Check that the [GET] /authors/{id} endpoint response with 200 status code
+    @Test
+    public void testThatGetAuthorReturnsHttpStatus200WhenAuthorExists() throws Exception {
+        // Create author in db
+        Author author = TestDataUtil.createTestAuthorA();
+        authorService.createAuthor(author);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    // Check that the [GET] /authors/{id} endpoint response with 404 status code
+    @Test
+    public void testThatGetAuthorReturnsHttpStatus404WhenNoAuthorExists() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/99")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
 }
