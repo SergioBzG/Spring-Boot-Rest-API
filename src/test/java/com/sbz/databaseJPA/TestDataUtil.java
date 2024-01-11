@@ -1,6 +1,8 @@
 package com.sbz.databaseJPA;
 
 
+import com.sbz.databaseJPA.domain.dto.AuthorDto;
+import com.sbz.databaseJPA.domain.dto.BookDto;
 import com.sbz.databaseJPA.domain.entities.Author;
 import com.sbz.databaseJPA.domain.entities.Book;
 
@@ -53,6 +55,14 @@ public final class TestDataUtil {
 
     public static Book createTestBookC(final Author author) {
         return Book.builder()
+                .isbn("078-65-5-681")
+                .title("Castle of Glasses")
+                .author(author)
+                .build();
+    }
+
+    public static BookDto createTestBookDtoA(final AuthorDto author) {
+        return BookDto.builder()
                 .isbn("078-65-5-681")
                 .title("Castle of Glasses")
                 .author(author)

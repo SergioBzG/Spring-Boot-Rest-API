@@ -1,6 +1,5 @@
 package com.sbz.databaseJPA.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbz.databaseJPA.TestDataUtil;
 import com.sbz.databaseJPA.domain.entities.Author;
@@ -25,7 +24,7 @@ public class AuthorControllerIntegrationTests {
     private final MockMvc mockMvc;
 
     // This attribute is used to take Java objects and turn them into Json, because requests receive Json objects in their bodies
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public AuthorControllerIntegrationTests(final MockMvc mockMvc) {
