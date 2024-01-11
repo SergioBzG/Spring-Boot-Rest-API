@@ -100,8 +100,6 @@ public class AuthorControllerIntegrationTests {
                 MockMvcRequestBuilders.get("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.status().isOk()
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].name").value("Abigail Rose")
