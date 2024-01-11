@@ -102,4 +102,49 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$[0].title").value("Cassandra")
         );
     }
+
+    // Check that the [GET] /books/{isbn} endpoint response with 200 status code
+    @Test
+    public void testThatGetBookReturnsHttpStatus200WhenBookExists() throws Exception {
+        // Create book in db
+        Book book = TestDataUtil.createTestBookA(null);
+        bookService.createBook(book.getIsbn(), book);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/" + book.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    // Check that the [GET] /books/{isbn} endpoint response with 404 status code
+    @Test
+    public void testThatGetBookReturnsHttpStatus404WhenNoBookExists() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/133-343-4345")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    // Check that the [GET] /books/{isbn} endpoint response with a book
+    @Test
+    public void testThatGetBookReturnsBookWhenBookExists() throws Exception {
+        // Create book in db
+        Book book = TestDataUtil.createTestBookA(null);
+        bookService.createBook(book.getIsbn(), book);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/" + book.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.isbn").value(book.getIsbn())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("Cassandra")
+        );
+    }
+
 }

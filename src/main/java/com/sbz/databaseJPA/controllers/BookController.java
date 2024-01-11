@@ -49,7 +49,7 @@ public class BookController {
     @GetMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> getBook(@PathVariable("isbn") String isbn){
         Optional<Book> foundBook = bookService.findOne(isbn);
-        return foundBook.map(bookEntity -> {
+        return foundBook.map(bookEntity -> { // In case that a book exists we have bookEntity
             BookDto bookDto = modelMapper.mapTo(bookEntity);
             return new ResponseEntity<>(bookDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

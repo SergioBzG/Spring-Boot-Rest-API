@@ -56,7 +56,7 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id){
         Optional<Author> foundAuthor = authorService.findOne(id);
         // Look at this (I must search about this)
-        return foundAuthor.map(authorEntity -> {
+        return foundAuthor.map(authorEntity -> { // In case that an author exists we have authorEntity
             AuthorDto authorDto = authorMapper.mapTo(authorEntity);
             return new ResponseEntity<>(authorDto, HttpStatus.OK);
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
