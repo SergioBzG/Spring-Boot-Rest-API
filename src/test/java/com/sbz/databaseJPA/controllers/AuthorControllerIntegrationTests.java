@@ -135,4 +135,23 @@ public class AuthorControllerIntegrationTests {
         );
     }
 
+    // Check that the [GET] /authors/{id} endpoint response with an author
+    @Test
+    public void testThatGetAuthorReturnsAuthorWhenAuthorExists() throws Exception {
+        // Create author in db
+        Author author = TestDataUtil.createTestAuthorA();
+        authorService.createAuthor(author);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value("Abigail Rose")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(80)
+        );
+    }
+
 }
