@@ -1,4 +1,4 @@
-package com.sbz.databaseJPA.domain;
+package com.sbz.databaseJPA.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

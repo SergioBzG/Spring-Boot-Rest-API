@@ -2,7 +2,7 @@ package com.sbz.databaseJPA.repositories;
 
 
 import com.sbz.databaseJPA.TestDataUtil;
-import com.sbz.databaseJPA.domain.Author;
+import com.sbz.databaseJPA.domain.entities.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

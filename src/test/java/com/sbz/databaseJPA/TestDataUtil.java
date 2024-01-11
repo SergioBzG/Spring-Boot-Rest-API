@@ -1,8 +1,8 @@
 package com.sbz.databaseJPA;
 
 
-import com.sbz.databaseJPA.domain.Author;
-import com.sbz.databaseJPA.domain.Book;
+import com.sbz.databaseJPA.domain.entities.Author;
+import com.sbz.databaseJPA.domain.entities.Book;
 
 // A utility class usually follows a pattern of being final
 public final class TestDataUtil {

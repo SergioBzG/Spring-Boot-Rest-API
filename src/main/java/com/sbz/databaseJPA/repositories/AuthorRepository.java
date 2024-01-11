@@ -1,6 +1,6 @@
 package com.sbz.databaseJPA.repositories;
 
-import com.sbz.databaseJPA.domain.Author;
+import com.sbz.databaseJPA.domain.entities.Author;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

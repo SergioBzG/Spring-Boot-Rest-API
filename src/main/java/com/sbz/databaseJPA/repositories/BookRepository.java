@@ -1,7 +1,7 @@
 package com.sbz.databaseJPA.repositories;
 
 
-import com.sbz.databaseJPA.domain.Book;
+import com.sbz.databaseJPA.domain.entities.Book;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
