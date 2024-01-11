@@ -3,6 +3,7 @@ package com.sbz.databaseJPA.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbz.databaseJPA.TestDataUtil;
 import com.sbz.databaseJPA.domain.entities.Author;
+import com.sbz.databaseJPA.services.AuthorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class AuthorControllerIntegrationTests {
 
+    private final AuthorService authorService;
     private final MockMvc mockMvc;
 
     // This attribute is used to take Java objects and turn them into Json, because requests receive Json objects in their bodies
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public AuthorControllerIntegrationTests(final MockMvc mockMvc) {
+    public AuthorControllerIntegrationTests(final MockMvc mockMvc, final AuthorService authorService) {
+        this.authorService = authorService;
         this.mockMvc = mockMvc;
         // Does not exist an ObjectMapper in the context (no bean)
         this.objectMapper = new ObjectMapper();
@@ -72,6 +75,38 @@ public class AuthorControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.name").value("Abigail Rose")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(80)
+        );
+    }
+
+    // Check that the [GET] /authors endpoint response with 200 status code
+    @Test
+    public void testThatListAuthorsReturnsHttpStatus200() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    // Check that the [GET] /authors endpoint response with a list of authors
+    @Test
+    public void testThatListAuthorsReturnsListOfAuthors() throws Exception {
+        // Create author in db
+        Author author = TestDataUtil.createTestAuthorA();
+        authorService.createAuthor(author);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].name").value("Abigail Rose")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].age").value(80)
         );
     }
 

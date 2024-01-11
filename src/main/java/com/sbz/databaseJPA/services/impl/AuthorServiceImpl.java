@@ -6,6 +6,12 @@ import com.sbz.databaseJPA.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
@@ -19,5 +25,28 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Author createAuthor(Author author){
         return authorRepository.save(author);
+    }
+
+    @Override
+    public List<Author> findAll() {
+        Iterable<Author> authorIterable = authorRepository.findAll();
+//        Iterator<Author> iterator = authorIterable.iterator();
+//        List<Author> result = new ArrayList<>();
+
+        // Different ways
+
+        /*
+        while(iterator.hasNext()){
+            result.add(authorIterable.iterator().next());
+        }
+        return result;
+         */
+
+        /*
+        authorIterable.forEach(result::add);
+        return result;
+         */
+        return StreamSupport.stream(authorIterable.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }
