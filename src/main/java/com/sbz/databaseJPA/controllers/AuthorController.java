@@ -27,7 +27,11 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author){
         // Map AuthorDto to Author using mapper
         Author authorEntity = authorMapper.mapFrom(author);
+        // Create Author
         Author savedAuthorEntity = authorService.createAuthor(authorEntity);
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
+        // Map Author to AuthorDto using mapper
+        AuthorDto savedAuthorDto = authorMapper.mapTo(savedAuthorEntity);
+
+        return new ResponseEntity<>(savedAuthorDto, HttpStatus.CREATED);
     }
 }
