@@ -3,6 +3,7 @@ package com.sbz.databaseJPA.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbz.databaseJPA.TestDataUtil;
 import com.sbz.databaseJPA.domain.dto.BookDto;
+import com.sbz.databaseJPA.domain.entities.Author;
 import com.sbz.databaseJPA.domain.entities.Book;
 import com.sbz.databaseJPA.services.BookService;
 import org.junit.jupiter.api.Test;
@@ -244,4 +245,28 @@ public class BookControllerIntegrationTests {
         );
     }
 
+    // Check that the [DELETE] /books/{id} endpoint response with 204 status code
+    @Test
+    public void testThatDeleteBookReturnsHttpStatus204ForNonExistingBook() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
+
+    @Test
+    public void testThatDeleteBookReturnsHttpStatus204ForExistingBook() throws Exception {
+        // Create book in db
+        Book book = TestDataUtil.createTestBookA(null);
+        Book savedBook = bookService.saveBook(book.getIsbn(), book);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/" + savedBook.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+    }
 }
