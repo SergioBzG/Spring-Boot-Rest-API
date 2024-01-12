@@ -3,6 +3,8 @@ package com.sbz.databaseJPA.services.impl;
 import com.sbz.databaseJPA.domain.entities.Book;
 import com.sbz.databaseJPA.repositories.BookRepository;
 import com.sbz.databaseJPA.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +36,14 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
     }
 
+    // Method used for pagination
+
+
+    @Override
+    public Page<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
+
     @Override
     public Optional<Book> findOne(String isbn) {
         return bookRepository.findById(isbn);
@@ -63,4 +73,5 @@ public class BookServiceImpl implements BookService {
     public void delete(String isbn) {
         bookRepository.deleteById(isbn);
     }
+
 }

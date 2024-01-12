@@ -4,6 +4,8 @@ import com.sbz.databaseJPA.domain.dto.BookDto;
 import com.sbz.databaseJPA.domain.entities.Book;
 import com.sbz.databaseJPA.mappers.Mapper;
 import com.sbz.databaseJPA.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,11 +53,17 @@ public class BookController {
     }
 
     @GetMapping(path = "/books")
-    public List<BookDto> listBooks() {
+    public Page<BookDto> listBooks(Pageable pageable) { //Here the Pageable object is injected by Spring
+        /*
+        // That was used when endpoint responded with a List and not with a Page
         List<Book> books = bookService.findAll();
         return books.stream()
                 .map(bookMapper::mapTo)
                 .collect(Collectors.toList());
+
+         */
+        Page<Book> books = bookService.findAll(pageable);
+        return books.map(bookMapper::mapTo);
     }
 
     @GetMapping(path = "/books/{isbn}")
