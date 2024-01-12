@@ -60,4 +60,21 @@ public class AuthorServiceImpl implements AuthorService {
     public boolean isExists(Long id) {
         return authorRepository.existsById(id);
     }
+
+    @Override
+    public Author partialUpdate(Long id, Author authorEntity) {
+        authorEntity.setId(id);
+
+        // Retrieve author from database and then updated it with authorEntity's data
+        return authorRepository.findById(id).map(existingAuthor -> { // if we find the authorEntity as provided has an age and, it's not null then to set that on the existingAuthor  as we found it from the db (It's the same with the name)
+            Optional.ofNullable(authorEntity.getAge()).ifPresent(existingAuthor::setAge);
+            Optional.ofNullable(authorEntity.getName()).ifPresent(existingAuthor::setName);
+
+            // Save changes
+            return authorRepository.save(existingAuthor);
+        }).orElseThrow( // It's unlikely that this happens, because a non-existing author is handled in the AuthorController
+                () -> new RuntimeException("Author does not exist")
+        );
+
+    }
 }

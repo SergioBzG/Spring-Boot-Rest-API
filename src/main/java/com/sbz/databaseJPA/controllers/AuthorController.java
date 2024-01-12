@@ -20,13 +20,13 @@ public class AuthorController {
     private final Mapper<Author, AuthorDto> authorMapper;
 
     @Autowired
-    public AuthorController(final AuthorService authorService, final Mapper<Author, AuthorDto> authorMapper){
+    public AuthorController(final AuthorService authorService, final Mapper<Author, AuthorDto> authorMapper) {
         this.authorService = authorService;
         this.authorMapper = authorMapper;
     }
 
     @PostMapping(path = "/authors")
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author){
+    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         // Map AuthorDto to Author using mapper
         Author authorEntity = authorMapper.mapFrom(author);
         // Create Author
@@ -53,7 +53,7 @@ public class AuthorController {
     }
 
     @GetMapping(path = "/authors/{id}")
-    public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id){
+    public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id) {
         Optional<Author> foundAuthor = authorService.findOne(id);
         // Look at this (I must search about this)
         return foundAuthor.map(authorEntity -> { // In case that an author exists we have authorEntity
@@ -67,17 +67,36 @@ public class AuthorController {
             @PathVariable("id") Long id,
             @RequestBody AuthorDto authorDto
     ) {
-       if(!authorService.isExists(id)){
-           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-       }
+        if (!authorService.isExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-       // Set id
-       authorDto.setId(id);
-       Author authorEntity = authorMapper.mapFrom(authorDto);
-       // Update author using the save method
+        // Set id (It can be better in authorService)
+        authorDto.setId(id);
+        Author authorEntity = authorMapper.mapFrom(authorDto);
+        // Update author using the save method
         Author savedAuthorEntity = authorService.saveAuthor(authorEntity);
         return new ResponseEntity<>(
                 authorMapper.mapTo(savedAuthorEntity),
+                HttpStatus.OK
+        );
+    }
+
+    @PatchMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(
+            @PathVariable("id") Long id,
+            @RequestBody AuthorDto authorDto
+    ) {
+        if (!authorService.isExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Author authorEntity = authorMapper.mapFrom(authorDto);
+        // Partial update
+        Author updatedAuthor = authorService.partialUpdate(id, authorEntity);
+
+        return new ResponseEntity<>(
+                authorMapper.mapTo(updatedAuthor),
                 HttpStatus.OK
         );
     }
