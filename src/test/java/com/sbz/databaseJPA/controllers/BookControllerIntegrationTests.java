@@ -198,4 +198,50 @@ public class BookControllerIntegrationTests {
         );
     }
 
+    // Check that the [PATCH] /books/{isbn} endpoint response with 200 status code
+    @Test
+    public void testThatPartialUpdateBookReturnsHttpStatusCode200Ok() throws Exception {
+        // Create book in db
+        Book book = TestDataUtil.createTestBookA(null);
+        Book savedBook = bookService.saveBook(book.getIsbn(), book);
+
+        BookDto testBook = TestDataUtil.createTestBookDtoA(null);
+        testBook.setTitle("UPDATED");
+        // To turn testBook into Json
+        String bookJson = objectMapper.writeValueAsString(testBook);
+
+        mockMvc.perform(
+                // Here the request is created
+                MockMvcRequestBuilders.patch("/books/" + savedBook.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                // Here is an assertion created (they can be chained)
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    // Check that the [PATCH] /books/{isbn} endpoint response with partial updated book
+    @Test
+    public void testThatPartialUpdateBookReturnsUpdatedBook() throws Exception {
+        // Create book in db
+        Book book = TestDataUtil.createTestBookA(null);
+        Book savedBook = bookService.saveBook(book.getIsbn(), book);
+
+        BookDto testBook = TestDataUtil.createTestBookDtoA(null);
+        testBook.setTitle("UPDATED");
+        // To turn testBook into Json
+        String bookJson = objectMapper.writeValueAsString(testBook);
+
+        mockMvc.perform(
+                // Here the request is created
+                MockMvcRequestBuilders.patch("/books/" + savedBook.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                // Here is an assertion created (they can be chained)
+                MockMvcResultMatchers.jsonPath("$.title").value(testBook.getTitle())
+        );
+    }
+
 }
