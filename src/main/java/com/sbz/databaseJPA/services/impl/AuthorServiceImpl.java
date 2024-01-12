@@ -75,6 +75,10 @@ public class AuthorServiceImpl implements AuthorService {
         }).orElseThrow( // It's unlikely that this happens, because a non-existing author is handled in the AuthorController
                 () -> new RuntimeException("Author does not exist")
         );
+    }
 
+    @Override
+    public void delete(Long id) {
+        authorRepository.deleteById(id);
     }
 }
